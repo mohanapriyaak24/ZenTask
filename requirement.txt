@@ -1,0 +1,10 @@
+CREATING A TEXT FILE USING TERRMINAL
+
+*In terminal type “echo > “filename.extension””, to create the desired file
+*where filename is the name of the file you
+*To make, and .extension is the extension  want to provide to the file
+
+USING THE PIP COMMAND INSTALL THE FLASK MODULE < 2
+*In terminal type pip install Flask==1.1.2 and then click enter
+
+
