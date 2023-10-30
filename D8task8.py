@@ -13,3 +13,10 @@ class circle():
     def perimeter(self):
         # perimeter of a circle =2πr 
         print(f"perimeter of circle is: {2*self.pii*self.l1}" )
+
+
+list1 =[23,52,43,21,34]
+for i in list1:
+    val = circle(i,3.141)
+    val.area() 
+    val.perimeter()  
