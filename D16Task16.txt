@@ -1,0 +1,251 @@
+Setting environment for MariaDB 11.2 (x64)
+
+C:\Windows\System32>mysql -u root -p
+Enter password: *********
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 45
+Server version: 11.2.2-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE IMDBdatabase4;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> CREATE USER 'moviemedia1'@'localhost'IDENTIFIED BY 'monamaria';
+Query OK, 0 rows affected (0.005 sec)
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON IMDBdatabase3.* TO 'moviemedia1'@'localhost'
+    -> ;
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> USE IMDBdatabase4;
+Database changed
+MariaDB [IMDBdatabase4]> CREATE DATABASE IMDBdatabase;
+ERROR 1007 (HY000): Can't create database 'imdbdatabase'; database exists
+MariaDB [IMDBdatabase4]> CREATE USER 'Nagalakshmi'@'localhost' IDENTIFIED BY 'Nagalakshmi@123';
+ERROR 1396 (HY000): Operation CREATE USER failed for 'Nagalakshmi'@'localhost'
+MariaDB [IMDBdatabase4]> GRANT ALL PRIVILEGES ON IMDBdatabase.* TO 'Nagalakshmi'@'localhost';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [IMDBdatabase4]> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Movies
+MariaDB [IMDBdatabase4]> CREATE TABLE Movies (
+    ->     movie_id INT PRIMARY KEY,
+    ->     title VARCHAR(255),
+    ->     release_date DATE,
+    ->     duration_minutes INT
+    -> );
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Media (Images or Videos)
+MariaDB [IMDBdatabase4]> CREATE TABLE Media (
+    ->     media_id INT PRIMARY KEY,
+    ->     movie_id INT,
+    ->     media_type ENUM('image', 'video'),
+    ->     file_path VARCHAR(255),
+    ->     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Genres
+MariaDB [IMDBdatabase4]> CREATE TABLE Genres (
+    ->     genre_id INT PRIMARY KEY,
+    ->     genre_name VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.007 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Movie-Genre Relationship
+MariaDB [IMDBdatabase4]> CREATE TABLE MovieGenres (
+    ->     movie_id INT,
+    ->     genre_id INT,
+    ->     PRIMARY KEY (movie_id, genre_id),
+    ->     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    ->     FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [IMDBdatabase4]> -- Table for Users
+MariaDB [IMDBdatabase4]> CREATE TABLE Users (
+    ->     user_id INT PRIMARY KEY,
+    ->     username VARCHAR(255),
+    ->     email VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Reviews
+MariaDB [IMDBdatabase4]> CREATE TABLE Reviews (
+    ->     review_id INT PRIMARY KEY,
+    ->     movie_id INT,
+    ->     user_id INT,
+    ->     rating DECIMAL(3, 1),
+    ->     review_text TEXT,
+    ->     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    ->     FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    -> );
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [IMDBdatabase4]> -- Table for Artists
+MariaDB [IMDBdatabase4]> CREATE TABLE Artists (
+    ->     artist_id INT PRIMARY KEY,
+    ->     artist_name VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Skills
+MariaDB [IMDBdatabase4]> CREATE TABLE Skills (
+    ->     skill_id INT PRIMARY KEY,
+    ->     skill_name VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Artist-Skill Relationship
+MariaDB [IMDBdatabase4]> CREATE TABLE ArtistSkills (
+    ->     artist_id INT,
+    ->     skill_id INT,
+    ->     PRIMARY KEY (artist_id, skill_id),
+    ->     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
+    ->     FOREIGN KEY (skill_id) REFERENCES Skills(skill_id)
+    -> );
+Query OK, 0 rows affected (0.008 sec)
+
+MariaDB [IMDBdatabase4]>
+MariaDB [IMDBdatabase4]> -- Table for Movie-Artist Relationship
+MariaDB [IMDBdatabase4]> CREATE TABLE MovieArtists (
+    ->     movie_id INT,
+    ->     artist_id INT,
+    ->     role VARCHAR(255),
+    ->     PRIMARY KEY (movie_id, artist_id, role),
+    ->     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    ->     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+    -> );
+Query OK, 0 rows affected (0.014 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT INTO Movies(movie_id,title,release_date,duration_minutes) VALUES (01,'LEO','2023-09-16',120);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]> SELECT*FROM Movies;
++----------+-------+--------------+------------------+
+| movie_id | title | release_date | duration_minutes |
++----------+-------+--------------+------------------+
+|        1 | LEO   | 2023-09-16   |              120 |
++----------+-------+--------------+------------------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT INTO Media(media_id,movie_id,media_type,file_path) VALUES (11,01,'video',NULL);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]>  SELECT*FROM Media;
++----------+----------+------------+-----------+
+| media_id | movie_id | media_type | file_path |
++----------+----------+------------+-----------+
+|       11 |        1 | video      | NULL      |
++----------+----------+------------+-----------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT  INTO Genres VALUES(22,'Action');
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [IMDBdatabase4]>  SELECT*FROM Genres;
++----------+------------+
+| genre_id | genre_name |
++----------+------------+
+|       22 | Action     |
++----------+------------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]> INSERT  INTO MovieGenres VALUES(1,22);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]> SELECT*FROM MovieGenres;
++----------+----------+
+| movie_id | genre_id |
++----------+----------+
+|        1 |       22 |
++----------+----------+
+1 row in set (0.000 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT  INTO users VALUES(33,'mona','mona123@gmail.com');
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]>  SELECT* FROM users;
++---------+----------+-------------------+
+| user_id | username | email             |
++---------+----------+-------------------+
+|      33 | mona     | mona123@gmail.com |
++---------+----------+-------------------+
+1 row in set (0.000 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT  INTO Reviews VALUES(44,1,33,3.5,'Best commercial action movie');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [IMDBdatabase4]>  SELECT*FROM Reviews;
++-----------+----------+---------+--------+------------------------------+
+| review_id | movie_id | user_id | rating | review_text                  |
++-----------+----------+---------+--------+------------------------------+
+|        44 |        1 |      33 |    3.5 | Best commercial action movie |
++-----------+----------+---------+--------+------------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT  INTO Artists(artist_id,artist_name) VALUES(21,'vijay'),(22,'trisha'),(23,'arjun'),(24,'gvm');
+Query OK, 4 rows affected (0.004 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [IMDBdatabase4]>  SELECT*FROM Artists;
++-----------+-------------+
+| artist_id | artist_name |
++-----------+-------------+
+|        21 | vijay       |
+|        22 | trisha      |
+|        23 | arjun       |
+|        24 | gvm         |
++-----------+-------------+
+4 rows in set (0.000 sec)
+
+MariaDB [IMDBdatabase4]>  INSERT INTO Skills VALUES(66,'ACTING');
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]> SELECT*FROM Skills;
++----------+------------+
+| skill_id | skill_name |
++----------+------------+
+|       66 | ACTING     |
++----------+------------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]> INSERT  INTO ArtistSkills VALUES(21,66);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [IMDBdatabase4]>  SELECT*FROM ArtistSkills;
++-----------+----------+
+| artist_id | skill_id |
++-----------+----------+
+|        21 |       66 |
++-----------+----------+
+1 row in set (0.000 sec)
+
+MariaDB [IMDBdatabase4]> INSERT INTO MovieArtists VALUES(1,21,'HERO');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [IMDBdatabase4]> SELECT*FROM MovieArtists;
++----------+-----------+------+
+| movie_id | artist_id | role |
++----------+-----------+------+
+|        1 |        21 | HERO |
++----------+-----------+------+
+1 row in set (0.001 sec)
+
+MariaDB [IMDBdatabase4]>
